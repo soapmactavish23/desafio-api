@@ -59,4 +59,8 @@ public class BillToPayService {
 		}		
 	}
 	
+	public void delete(Integer id) {
+		repository.deleteById(id);
+	}
+	
 }
