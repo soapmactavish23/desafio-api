@@ -1,12 +1,13 @@
 package com.example.api.domain.model;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,11 +24,11 @@ public class BillToPay {
 	
 	@NotNull
 	@Column(name = "data_vencimento")
-	private Date dueDate;
+	private LocalDate dueDate;
 	
 	@NotNull
 	@Column(name = "data_pagamento")
-	private Date payDay;
+	private LocalDate payDay;
 	
 	@NotNull
 	@Column(name = "valor")
@@ -37,7 +38,13 @@ public class BillToPay {
 	@Column(name = "descricao")
 	private String description;
 	
-	@NotNull
 	@Column(name = "situacao")
 	private Boolean status;
+	
+	@PrePersist
+	public void prePersist() {
+		if(getId() == null) {
+			setStatus(false);
+		}
+	}
 }

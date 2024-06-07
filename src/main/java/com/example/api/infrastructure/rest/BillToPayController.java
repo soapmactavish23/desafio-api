@@ -1,7 +1,5 @@
 package com.example.api.infrastructure.rest;
 
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,46 +21,47 @@ import com.example.api.domain.service.BillToPayService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/contas-a-pagar")
+@RequestMapping("/conta")
 public class BillToPayController {
 
 	@Autowired
 	private BillToPayService service;
-	
+
 	@PostMapping
 	public ResponseEntity<BillToPay> create(@RequestBody @Valid BillToPay obj) {
 		BillToPay objSaved = service.create(obj);
 		return ResponseEntity.status(HttpStatus.CREATED).body(objSaved);
 	}
-	
+
 	@PutMapping
 	public ResponseEntity<BillToPay> update(@RequestBody @Valid BillToPay obj) {
 		BillToPay objSaved = service.update(obj);
 		return ResponseEntity.ok(objSaved);
 	}
-	
+
 	@GetMapping("/{id}")
 	public ResponseEntity<BillToPay> findById(@PathVariable("id") Integer id) {
 		BillToPay objSaved = service.findById(id);
 		return ResponseEntity.ok(objSaved);
 	}
-	
-	@PutMapping("/{id}")
+
+	@PutMapping("/status/{id}")
 	@ResponseStatus(code = HttpStatus.NO_CONTENT)
 	public void changeStatus(@PathVariable("id") Integer id) {
 		service.changeStatus(id);
 	}
-	
+
 	@GetMapping
-	public Page<BillToPay> search(@RequestParam(defaultValue = "false") Boolean status, Date dueDate,@RequestParam(defaultValue = "") String description, Pageable pageable) {
+	public Page<BillToPay> search(@RequestParam(defaultValue = "false") String status, String dueDate,
+			@RequestParam(defaultValue = "") String description, Pageable pageable) {
 		return service.search(status, dueDate, description, pageable);
 	}
-	
+
 	@GetMapping("/contar-por-periodo")
-	public ResponseEntity<Double> countByPeriod(@RequestParam Date startDate,@RequestParam Date endDate) {
+	public ResponseEntity<Double> countByPeriod(@RequestParam(defaultValue = "") String startDate,
+			@RequestParam(defaultValue = "") String endDate) {
 		Double value = service.countByPeriod(startDate, endDate);
 		return ResponseEntity.ok(value);
 	}
-	
-	
+
 }

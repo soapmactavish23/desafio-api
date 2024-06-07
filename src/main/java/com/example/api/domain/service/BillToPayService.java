@@ -1,6 +1,6 @@
 package com.example.api.domain.service;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class BillToPayService {
 	public BillToPay update(BillToPay obj) {
 		BillToPay objSaved = findById(obj.getId());
 		
-		BeanUtils.copyProperties(obj, objSaved, "id");
+		BeanUtils.copyProperties(obj, objSaved, "id", "status");
 		
 		return repository.save(objSaved);
 	}
@@ -41,12 +41,22 @@ public class BillToPayService {
 		repository.save(objSaved);
 	}
 	
-	public Page<BillToPay> search(Boolean status, Date dueDate, String description, Pageable pageable) {
+	public Page<BillToPay> search(String statusStr, String dueDateStr, String description, Pageable pageable) {
+		
+		LocalDate dueDate = LocalDate.parse(dueDateStr);
+		Boolean status = Boolean.parseBoolean(statusStr);
+		
 		return repository.findByStatusAndDueDateAndDescriptionContaining(status, dueDate, description, pageable);
 	}
 	
-	public Double countByPeriod(Date startDate, Date endDate) {
-		return repository.countByPeriod(startDate, endDate);
+	public Double countByPeriod(String startDateStr, String endDateStr) {
+		if(!startDateStr.equals("") && !endDateStr.equals("")) {
+			LocalDate startDate = LocalDate.parse(startDateStr);
+			LocalDate endDate = LocalDate.parse(endDateStr);
+			return repository.countByPeriod(startDate, endDate);
+		} else {
+			return 0.0;
+		}		
 	}
 	
 }
