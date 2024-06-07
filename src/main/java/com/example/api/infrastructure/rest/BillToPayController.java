@@ -1,5 +1,7 @@
 package com.example.api.infrastructure.rest;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.api.domain.model.BillToPay;
 import com.example.api.domain.service.BillToPayService;
@@ -62,6 +65,11 @@ public class BillToPayController {
 			@RequestParam(defaultValue = "") String endDate) {
 		Double value = service.countByPeriod(startDate, endDate);
 		return ResponseEntity.ok(value);
+	}
+	
+	@PostMapping("/csv")
+	public List<BillToPay> importCsv(@RequestParam("arquivo") MultipartFile file) {
+		return service.importCsv(file);
 	}
 
 }
